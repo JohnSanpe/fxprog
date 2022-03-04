@@ -160,7 +160,7 @@ int main(int argc, char *const argv[])
     uint16_t vendor, product, device;
     uint8_t mode, config;
     int optidx, retval;
-    char arg;
+    char arg, *tmp;
     bool hex;
 
     while ((arg = getopt_long(argc, argv, "hd:p:l:iew:B:V:P:D:C:F:m:rv", options, &optidx)) != -1) {
@@ -177,7 +177,6 @@ int main(int argc, char *const argv[])
                 break;
 
             case 'p':
-                char *tmp;
                 tmp = strchr(optarg, ':');
                 *tmp++ = '\0';
                 usb_vendor = strtoul(optarg, NULL, 0);
