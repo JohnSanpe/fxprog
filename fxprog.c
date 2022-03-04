@@ -222,6 +222,8 @@ int fxdev_eeprom_info(void)
     uint8_t info;
     int retval;
 
+    printf("Chip ID:\n");
+
     retval = ezusb_read(
         "fxdev_eeprom_info",
         FX_CMD_EEPROM_SIZE,
@@ -231,7 +233,8 @@ int fxdev_eeprom_info(void)
     if (retval)
         return retval;
 
-    printf("eeprom info: 0x%02x\n", info);
+    printf("  eeprom info: 0x%02x\n", info);
+    printf("  Done!\n");
     return 0;
 }
 
@@ -240,27 +243,23 @@ int fxdev_eeprom_erase(void)
     uint8_t data[16] = {};
     int retval;
 
+    printf("Chip erase eeprom...\n");
+
     retval = ezusb_eeprom_write(FX_EEPROM_MODE, &data, 16, NULL);
     if (retval)
         return retval;
 
+    printf("  Done!\n");
     return 0;
 }
 
-int fxdev_eeprom_mode(uint8_t mode)
-{
-    int retval;
-
-    retval = ezusb_eeprom_write(FX_EEPROM_MODE, &mode, 1, NULL);
-    if (retval)
-        return retval;
-
-    return 0;
-}
 
 int fxdev_eeprom_write(const void *data, size_t length, bool hex)
 {
     int retval;
+
+    printf("Chip write eeprom...\n");
+    printf("  Length: 0x%04lx\n", length);
 
     if (hex)
         retval = ihex_parse(data, ezusb_eeprom_write, NULL);
@@ -269,6 +268,22 @@ int fxdev_eeprom_write(const void *data, size_t length, bool hex)
     if (retval)
         return retval;
 
+    printf("  Done!\n");
+    return 0;
+}
+
+int fxdev_eeprom_mode(uint8_t mode)
+{
+    int retval;
+
+    printf("Chip write bootmode...\n");
+    printf("  Boot mode: 0x%02x\n", mode);
+
+    retval = ezusb_eeprom_write(FX_EEPROM_MODE, &mode, 1, NULL);
+    if (retval)
+        return retval;
+
+    printf("  Done!\n");
     return 0;
 }
 
@@ -276,10 +291,14 @@ int fxdev_eeprom_vendor(uint16_t vendor)
 {
     int retval;
 
+    printf("Chip write vendor...\n");
+    printf("  Vendor ID: 0x%04x\n", vendor);
+
     retval = ezusb_eeprom_write(FX_EEPROM_VENDOR, &vendor, 2, NULL);
     if (retval)
         return retval;
 
+    printf("  Done!\n");
     return 0;
 }
 
@@ -287,10 +306,14 @@ int fxdev_eeprom_product(uint16_t product)
 {
     int retval;
 
+    printf("Chip write product...\n");
+    printf("  Product ID: 0x%04x\n", product);
+
     retval = ezusb_eeprom_write(FX_EEPROM_PRODUCT, &product, 2, NULL);
     if (retval)
         return retval;
 
+    printf("  Done!\n");
     return 0;
 }
 
@@ -298,10 +321,14 @@ int fxdev_eeprom_device(uint16_t device)
 {
     int retval;
 
+    printf("Chip write device...\n");
+    printf("  Device ID: 0x%04x\n", device);
+
     retval = ezusb_eeprom_write(FX_EEPROM_DEVICE, &device, 2, NULL);
     if (retval)
         return retval;
 
+    printf("  Done!\n");
     return 0;
 }
 
@@ -309,10 +336,14 @@ int fxdev_eeprom_config(uint8_t config)
 {
     int retval;
 
+    printf("Chip write config...\n");
+    printf("  Config: 0x%02x\n", config);
+
     retval = ezusb_eeprom_write(FX_EEPROM_DEVICE, &config, 1, NULL);
     if (retval)
         return retval;
 
+    printf("  Done!\n");
     return 0;
 }
 
@@ -320,6 +351,9 @@ int fxdev_eeprom_firmware(const void *data, size_t length)
 {
     uint8_t transfer[8] = {};
     int retval;
+
+    printf("Chip write firmware...\n");
+    printf("  Length: 0x%04lx\n", length);
 
     transfer[0] = length >> 8;
     transfer[1] = length;
@@ -341,12 +375,15 @@ int fxdev_eeprom_firmware(const void *data, size_t length)
     if (retval)
         return retval;
 
+    printf("  Done!\n");
     return 0;
 }
 
 int fxdev_reset(void)
 {
     int retval;
+
+    printf("Chip reset...\n");
 
     if ((retval = ezusb_reset(true)))
         return retval;
@@ -356,5 +393,6 @@ int fxdev_reset(void)
     if ((retval = ezusb_reset(false)))
         return retval;
 
+    printf("  Done!\n");
     return 0;
 }

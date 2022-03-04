@@ -86,7 +86,7 @@ static __noreturn void usage(void)
 
 static __noreturn void version(void)
 {
-    printf("fxprog 1.0\n");
+    printf("Fxprog v1.0\n");
     printf("Copyright(c) 2021 Sanpe <sanpeqf@gmail.com>\n");
     printf("License GPLv2+: GNU GPL version 2 or later.\n");
     exit(1);
@@ -251,6 +251,8 @@ int main(int argc, char *const argv[])
 
     if (argc < 2)
         usage();
+
+    printf("Fxprog v1.0\n");
 
     retval = fx_usb_init(usb_vendor, usb_product);
     if (retval)
