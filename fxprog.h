@@ -3,8 +3,8 @@
  * Copyright(c) 2021 Sanpe <sanpeqf@gmail.com>
  */
 
-#ifndef _CH55xPROG_H_
-#define _CH55xPROG_H_
+#ifndef _FXPROG_H_
+#define _FXPROG_H_
 
 #include "fxhw.h"
 #include <stdio.h>
@@ -35,5 +35,5 @@ extern int fxdev_eeprom_config(uint8_t config);
 extern int fxdev_eeprom_firmware(const void *data, size_t length);
 extern int fxdev_reset(void);
 
-#endif  /* _CH55XPROG_H_ */
+#endif  /* _FXPROG_H_ */
 

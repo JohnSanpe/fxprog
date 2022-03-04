@@ -3,8 +3,8 @@
  * Copyright(c) 2021 Sanpe <sanpeqf@gmail.com>
  */
 
-#ifndef _CH55xHW_H_
-#define _CH55xHW_H_
+#ifndef _FXHW_H_
+#define _FXHW_H_
 
 #include "macro.h"
 
@@ -28,4 +28,4 @@
 #define FX_EEPROM_HEADER            8
 #define FX_EEPROM_FIRMWARE          12
 
-#endif  /* _CH55xHW_H_ */
+#endif  /* _FXHW_H_ */
