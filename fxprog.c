@@ -79,29 +79,6 @@ static int ezusb_reset(bool enable)
     return retval;
 }
 
-static int ezusb_ram_read(uint16_t address, void *data, size_t length, void *pdata)
-{
-    is_external_t is_external = pdata;
-    unsigned int retry = 6;
-    bool external;
-    int retval;
-
-    external = is_external(address, length);
-    if (external)
-        exit(1);
-
-    while (--retry) {
-        if (!(retval = ezusb_read(
-            "ezusb_ram_read",
-            external ? FX_CMD_RW_MEMORY : FX_CMD_RW_INTERNAL,
-            address, data, length
-        )))
-            break;
-    }
-
-    return retval;
-}
-
 static int ezusb_ram_write(uint16_t address, const void *data, size_t length, void *pdata)
 {
     is_external_t is_external = pdata;

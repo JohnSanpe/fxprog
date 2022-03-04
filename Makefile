@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
-flags = -Wall -l usb-1.0
+flags = -Wall -Werror -l usb-1.0
 heads = fxhw.h fxprog.h
 objs  = fxprog.o hexprase.o main.o
 
