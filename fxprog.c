@@ -56,20 +56,29 @@ static int ezusb_write(const char *label, uint8_t opcode,
     return 0;
 }
 
+static uint16_t ezusb_reset_reg(void)
+{
+    uint16_t address;
+
+    switch (device_type) {
+        case DEV_TYPE_FX:
+            address = FX_RESET_REG_FX;
+            break;
+
+        case DEV_TYPE_FX2 ... DEV_TYPE_FX2LP:
+            address = FX_RESET_REG_FX2;
+            break;
+    }
+
+    return address;
+}
+
 static int ezusb_reset(bool enable)
 {
     uint16_t address;
     int retval;
 
-    switch (device_type) {
-        case DEV_TYPE_FX:
-            address = FX_ADDRESS_FX;
-            break;
-
-        case DEV_TYPE_FX2 ... DEV_TYPE_FX2LP:
-            address = FX_ADDRESS_FX2;
-            break;
-    }
+    address = ezusb_reset_reg();
 
     retval = ezusb_write(
         "ezusb_reset", FX_CMD_RW_INTERNAL,
@@ -350,14 +359,15 @@ int fxdev_eeprom_config(uint8_t config)
 
 int fxdev_eeprom_firmware(const void *data, size_t length)
 {
+    uint16_t address;
     uint8_t transfer[8] = {};
     int retval;
 
     printf("Chip write firmware...\n");
     printf("  Length: 0x%04lx\n", length);
 
-    transfer[0] = length >> 8;
-    transfer[1] = length;
+    transfer[FX_FIRMWARE_LENH] = length >> 8;
+    transfer[FX_FIRMWARE_LENL] = length;
 
     retval = ezusb_eeprom_write(FX_EEPROM_HEADER, transfer, 4, NULL);
     if (retval)
@@ -367,10 +377,12 @@ int fxdev_eeprom_firmware(const void *data, size_t length)
     if (retval)
         return retval;
 
-    transfer[0] = 0x80;
-    transfer[1] = 0x01;
-    transfer[2] = 0xe6;
-    transfer[3] = 0x00;
+    address = ezusb_reset_reg();
+
+    transfer[FX_FIRMWARE_LENH] = FX_FIRMWARE_LAST;
+    transfer[FX_FIRMWARE_LENL] = 0x01;
+    transfer[FX_FIRMWARE_ADDRH] = address >> 8;
+    transfer[FX_FIRMWARE_ADDRL] = address;
 
     retval = ezusb_eeprom_write(FX_EEPROM_FIRMWARE + length, transfer, 8, NULL);
     if (retval)

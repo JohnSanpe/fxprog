@@ -17,15 +17,21 @@
 #define FX_CMD_RW_MEMORY            0xa3
 #define FX_CMD_EEPROM_SIZE          0xa5
 
-#define FX_ADDRESS_FX               0x7f92
-#define FX_ADDRESS_FX2              0xe600
+#define FX_RESET_REG_FX             0x7f92
+#define FX_RESET_REG_FX2            0xe600
 
-#define FX_EEPROM_MODE              0
-#define FX_EEPROM_VENDOR            1
-#define FX_EEPROM_PRODUCT           3
-#define FX_EEPROM_DEVICE            5
-#define FX_EEPROM_CONFIG            7
-#define FX_EEPROM_HEADER            8
-#define FX_EEPROM_FIRMWARE          12
+#define FX_EEPROM_MODE              0x00
+#define FX_EEPROM_VENDOR            0x01
+#define FX_EEPROM_PRODUCT           0x03
+#define FX_EEPROM_DEVICE            0x05
+#define FX_EEPROM_CONFIG            0x07
+#define FX_EEPROM_HEADER            0x08
+#define FX_EEPROM_FIRMWARE          0x0c
+
+#define FX_FIRMWARE_LENH            0x00
+#define FX_FIRMWARE_LENL            0x01
+#define FX_FIRMWARE_ADDRH           0x02
+#define FX_FIRMWARE_ADDRL           0x03
+#define FX_FIRMWARE_LAST            0x80
 
 #endif  /* _FXHW_H_ */
