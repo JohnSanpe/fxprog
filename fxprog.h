@@ -22,7 +22,7 @@ enum fxdev_type {
 extern libusb_device_handle *fx_usb_device;
 extern enum fxdev_type device_type;
 
-extern int ihex_parse(const void *image, int (*write)(uint16_t address, const void *data, size_t length, void *pdata), void *pdata);
+extern int ihex_parse(const void *image, int (*fn)(uint16_t address, const void *data, size_t length, void *pdata), void *pdata);
 extern int fxdev_ram_write(const void *data, size_t length, bool hex);
 extern int fxdev_eeprom_info(void);
 extern int fxdev_eeprom_erase(void);

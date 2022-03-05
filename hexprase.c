@@ -50,7 +50,7 @@ bool ihex_checksum(const char *start, const char *end)
     return strtohex(end, 2) == cumul;
 }
 
-int ihex_parse(const void *image, int (*write)(uint16_t address, const void *data, size_t length, void *pdata), void *pdata)
+int ihex_parse(const void *image, int (*fn)(uint16_t address, const void *data, size_t length, void *pdata), void *pdata)
 {
     const struct ihex_head *line, *next;
     unsigned int base;
@@ -100,7 +100,7 @@ int ihex_parse(const void *image, int (*write)(uint16_t address, const void *dat
             case IHEX_TYPE_DATA:
                 for (count = 0; count < length; ++count)
                     buff[count] = strtohex(&line->data[count * 2], 2);
-                retval = write(addr, buff, length, pdata);
+                retval = fn(addr, buff, length, pdata);
                 if (retval)
                     return retval;
                 break;
