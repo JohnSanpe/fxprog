@@ -249,12 +249,13 @@ int fxdev_eeprom_info(void)
 
 int fxdev_eeprom_erase(void)
 {
-    uint8_t data[16] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,\
-    			0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+    uint8_t data[16];
     int retval;
-
+    
+    
     printf("Chip erase eeprom...\n");
 
+    memset(data, 0xff, sizeof(data));
     retval = ezusb_eeprom_write(FX_EEPROM_MODE, &data, 16, NULL);
     if (retval)
         return retval;
