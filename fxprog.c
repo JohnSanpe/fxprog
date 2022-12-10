@@ -11,7 +11,7 @@ enum fxdev_type device_type;
 typedef bool (*is_external_t)(uint16_t addr, size_t length);
 
 static int ezusb_read(const char *label, uint8_t opcode,
-                uint16_t addr, uint8_t *data, size_t len)
+                      uint16_t addr, uint8_t *data, size_t len)
 {
     int retlen;
 
@@ -34,7 +34,7 @@ static int ezusb_read(const char *label, uint8_t opcode,
 }
 
 static int ezusb_write(const char *label, uint8_t opcode,
-                    uint16_t addr, const void *data, size_t len)
+                       uint16_t addr, const void *data, size_t len)
 {
     int retlen;
 
@@ -251,8 +251,8 @@ int fxdev_eeprom_erase(void)
 {
     uint8_t data[16];
     int retval;
-    
-    
+
+
     printf("Chip erase eeprom...\n");
 
     memset(data, 0xff, sizeof(data));
@@ -263,7 +263,6 @@ int fxdev_eeprom_erase(void)
     printf("  Done!\n");
     return 0;
 }
-
 
 int fxdev_eeprom_write(const void *data, size_t length, bool hex)
 {

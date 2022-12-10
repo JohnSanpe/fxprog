@@ -76,7 +76,7 @@ static __noreturn void usage(void)
     printf("  -V, --vendor      <vid>       write vendor id to eeprom               \n");
     printf("  -P, --product     <pid>       write product id to eeprom              \n");
     printf("  -D, --device      <did>       write device id to eeprom               \n");
-    printf("  -C, --config      <conf>      write config to eeprom                   \n");
+    printf("  -C, --config      <conf>      write config to eeprom                  \n");
     printf("  -F, --firmware    <file>      write firmware to eeprom                \n");
     printf("  -m, --memory      <file>      load memory with data from filename     \n");
     printf("  -r, --reset                   reset chip after operate                \n");
@@ -114,10 +114,10 @@ static int fx_usb_init(uint16_t usb_vendor, uint16_t usb_product)
         }
     }
 
-	if ((retval = libusb_claim_interface(fx_usb_device, 0))) {
-		fprintf(stderr, "Cannot claim interface: %s\n", libusb_error_name(retval));
-		return retval;
-	};
+    if ((retval = libusb_claim_interface(fx_usb_device, 0))) {
+        fprintf(stderr, "Cannot claim interface: %s\n", libusb_error_name(retval));
+        return retval;
+    };
 
     return 0;
 }
