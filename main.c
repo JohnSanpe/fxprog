@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0-or-later */
 /*
- * Copyright(c) 2021 Sanpe <sanpeqf@gmail.com>
+ * Copyright(c) 2021-2022 John Sanpe <sanpeqf@gmail.com>
  */
 
 #include "fxprog.h"
@@ -65,29 +65,28 @@ static const struct option options[] = {
 static __noreturn void usage(void)
 {
     printf("Usage: fxprog [options]...\n");
-    printf("  -h, --help                    display this message                    \n");
-    printf("  -d, --device      <type>      device type: fx fx2 fx2lp               \n");
-    printf("  -p, --port        <vid:pid>   set device vendor and product           \n");
-    printf("  -l, --preload     <file>      load preload to memory                  \n");
-    printf("  -i, --info                    read the eeprom info                    \n");
-    printf("  -e, --erase                   erase the entire eeprom                 \n");
-    printf("  -w, --flash       <file>      write eeprom with data from filename    \n");
-    printf("  -B, --bootmode    <mode>      write bootmode to eeprom                \n");
-    printf("  -V, --vendor      <vid>       write vendor id to eeprom               \n");
-    printf("  -P, --product     <pid>       write product id to eeprom              \n");
-    printf("  -D, --device      <did>       write device id to eeprom               \n");
-    printf("  -C, --config      <conf>      write config to eeprom                  \n");
-    printf("  -F, --firmware    <file>      write firmware to eeprom                \n");
-    printf("  -m, --memory      <file>      load memory with data from filename     \n");
-    printf("  -r, --reset                   reset chip after operate                \n");
-    printf("  -v, --version                 display version information             \n");
+    printf("\t-h, --help                 display this message\n");
+    printf("\t-d, --device    <type>     device type: fx fx2 fx2lp\n");
+    printf("\t-p, --port      <vid:pid>  set device vendor and product\n");
+    printf("\t-m, --memory    <file>     load firmware to memory\n");
+    printf("\t-i, --info                 read the eeprom info\n");
+    printf("\t-e, --erase                erase the entire eeprom\n");
+    printf("\t-w, --flash     <file>     write eeprom with data from filename\n");
+    printf("\t-B, --bootmode  <mode>     write bootmode to eeprom\n");
+    printf("\t-V, --vendor    <vid>      write vendor id to eeprom\n");
+    printf("\t-P, --product   <pid>      write product id to eeprom\n");
+    printf("\t-D, --device    <did>      write device id to eeprom\n");
+    printf("\t-C, --config    <conf>     write config to eeprom\n");
+    printf("\t-F, --firmware  <file>     write firmware to eeprom\n");
+    printf("\t-r, --reset                reset chip after operate\n");
+    printf("\t-v, --version              display version information\n");
     exit(1);
 }
 
 static __noreturn void version(void)
 {
-    printf("Fxprog v1.0\n");
-    printf("Copyright(c) 2021 Sanpe <sanpeqf@gmail.com>\n");
+    printf("Fxprog v1.1\n");
+    printf("Copyright(c) 2021-2022 John Sanpe <sanpeqf@gmail.com>\n");
     printf("License GPLv2+: GNU GPL version 2 or later.\n");
     exit(1);
 }
@@ -154,7 +153,6 @@ int main(int argc, char *const argv[])
 {
     uint16_t usb_vendor = FX_USB_VENDOR;
     uint16_t usb_product = FX_USB_PRODUCT;
-    const char *preload = "preload.hex";
     const char *flash, *memory, *firmware;
     unsigned long flags = 0;
     uint16_t vendor, product, device;
@@ -183,8 +181,9 @@ int main(int argc, char *const argv[])
                 usb_product = strtoul(tmp, NULL, 0);
                 break;
 
-            case 'l':
-                preload = optarg;
+            case 'm':
+                flags |= FLAG_MEMORY;
+                memory = optarg;
                 break;
 
             case 'i':
@@ -232,11 +231,6 @@ int main(int argc, char *const argv[])
                 firmware = optarg;
                 break;
 
-            case 'm':
-                flags |= FLAG_MEMORY;
-                memory = optarg;
-                break;
-
             case 'r':
                 flags |= FLAG_RESET;
                 break;
@@ -252,14 +246,17 @@ int main(int argc, char *const argv[])
     if (argc < 2)
         usage();
 
-    printf("Fxprog v1.0\n");
-
+    printf("Fxprog v1.1\n");
     retval = fx_usb_init(usb_vendor, usb_product);
     if (retval)
         return retval;
 
-    hex = mmap_firmware(preload);
-    fxdev_ram_write(firmware_data, firmware_stat.st_size, hex);
+    if (flags & FLAG_MEMORY) {
+        hex = mmap_firmware(memory);
+        retval = fxdev_ram_write(firmware_data, firmware_stat.st_size, hex);
+        if (retval)
+            err(retval, "Failed to load memory with data");
+    }
 
     if ((flags & FLAG_INFO) && (retval = fxdev_eeprom_info()))
         err(retval, "Failed to read the eeprom info");
@@ -294,13 +291,6 @@ int main(int argc, char *const argv[])
         retval = fxdev_eeprom_firmware(firmware_data, firmware_stat.st_size);
         if (retval)
             err(retval, "Failed to write firmware");
-    }
-
-    if (flags & FLAG_MEMORY) {
-        hex = mmap_firmware(memory);
-        retval = fxdev_ram_write(firmware_data, firmware_stat.st_size, hex);
-        if (retval)
-            err(retval, "Failed to load memory with data");
     }
 
     if ((flags & FLAG_RESET) && (retval = fxdev_reset()))
